@@ -1,26 +1,143 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ==========================================================================
+   StudyPilot design tokens
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+   Tailwind v4 is CSS-first: we define our theme here and Tailwind generates
+   the matching utilities (bg-surface, text-muted, rounded-card, ...).
+   Centralising this means spacing and colour stay consistent everywhere.
+   ========================================================================== */
+
+:root {
+  /* Neutrals — a calm, slightly cool grey ramp. Deliberately desaturated so
+     colour is reserved for meaning (risk, status) rather than decoration. */
+  --background: #f7f8fa;
+  --surface: #ffffff;
+  --surface-muted: #f1f3f6;
+  --border: #e4e7ec;
+  --border-strong: #d0d5dd;
+
+  --foreground: #101828;
+  --muted: #667085;
+  --subtle: #98a2b3;
+
+  /* Brand — a single calm indigo. One accent keeps the UI professional. */
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --primary-soft: #eef2ff;
+  --on-primary: #ffffff;
+
+  /* Semantic status colours. Desaturated so they read as informative,
+     not alarming. */
+  --success: #027a48;
+  --success-soft: #ecfdf3;
+  --warning: #b54708;
+  --warning-soft: #fffaeb;
+  --danger: #b42318;
+  --danger-soft: #fef3f2;
+  --info: #175cd3;
+  --info-soft: #eff8ff;
+
+  /* Spacing rhythm — a 4px base scale. Multiples of 4 keep vertical
+     rhythm consistent across unrelated components. */
+  --radius: 0.625rem;
+  --radius-sm: 0.5rem;
+  --radius-lg: 0.875rem;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0b0d12;
+    --surface: #14161d;
+    --surface-muted: #1a1d26;
+    --border: #262a35;
+    --border-strong: #343947;
+
+    --foreground: #f2f4f7;
+    --muted: #98a2b3;
+    --subtle: #667085;
+
+    --primary: #818cf8;
+    --primary-hover: #a5b4fc;
+    --primary-soft: #1e1b4b;
+    --on-primary: #101828;
+
+    --success: #47cd89;
+    --success-soft: #052e1b;
+    --warning: #fdb022;
+    --warning-soft: #3b2500;
+    --danger: #f97066;
+    --danger-soft: #3f1412;
+    --info: #84adff;
+    --info-soft: #102a43;
   }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-soft: var(--primary-soft);
+  --color-on-primary: var(--on-primary);
+
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+
+  /* Spacing scale — 4px base. Referenced as p-4, gap-6, space-y-8 etc. */
+  --spacing: 0.25rem;
+
+  --radius-card: var(--radius);
+  --radius-field: var(--radius-sm);
+  --radius-panel: var(--radius-lg);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  /* Subtle, consistent elevation. Cards should lift slightly, not glow. */
+  --shadow-card: 0 1px 2px 0 rgb(16 24 40 / 0.05);
+  --shadow-raised: 0 4px 12px -2px rgb(16 24 40 / 0.08);
+  --shadow-overlay: 0 12px 32px -8px rgb(16 24 40 / 0.16);
+}
+
+* {
+  border-color: var(--border);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* A single visible focus style everywhere, for keyboard users only. */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Respect users who ask for less motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
