@@ -407,7 +407,7 @@ Each phase is independently shippable and ends with lint + typecheck + build pas
 | --- | --- | --- | --- |
 | 0 | Project plan, git init, `.env.example` | none | **Done** |
 | 1 | Design system, app shell, landing/login/register/dashboard | `lucide-react` | **Done** |
-| 2 | Supabase project, migrations, RLS policies | none (CLI optional) | Next |
+| 2 | Supabase project, migrations, RLS policies | `@supabase/supabase-js`, `@supabase/ssr` | **Code done — awaiting your keys** |
 | 3 | Supabase Auth: register/login/logout, `proxy.ts` guard | `@supabase/ssr`, `@supabase/supabase-js` | Next |
 | 4 | Onboarding wizard + subjects/topics/exams CRUD | none | |
 | 5 | Availability windows + energy preferences | none | |
