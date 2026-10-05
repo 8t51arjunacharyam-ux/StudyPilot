@@ -1,21 +1,25 @@
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Topbar } from "@/components/layout/Topbar";
 import { MobileNav } from "@/components/layout/MobileNav";
+import { getProfile } from "@/lib/auth/session";
 
 /**
- * AppShell — the responsive frame around every signed-in page.
+ * AppShell - the responsive frame around every signed-in page.
  *
  * Layout behaviour:
- *   - ≥1024px (lg): permanent sidebar + topbar, side by side.
- *   - <1024px:    hidden sidebar; a compact mobile header with the
- *                 menu button takes its place, and MobileNav provides
- *                 the drawer.
+ *   - >=1024px (lg): permanent sidebar + topbar, side by side.
+ *   - <1024px:  hidden sidebar; a compact mobile header with the menu
+ *               button takes its place, and MobileNav provides the drawer.
  *
- * This component is a Server Component — it holds no interactive state
- * itself and simply arranges the interactive pieces. That keeps the shell
- * markup out of the client bundle.
+ * This is a Server Component. It reads the profile on the server and passes
+ * plain strings to the interactive children, so no user data is fetched from
+ * the browser and the shell markup stays out of the client bundle.
  */
-export function AppShell({ children }: { children: React.ReactNode }) {
+export async function AppShell({ children }: { children: React.ReactNode }) {
+  // The layout already verified the session; this just reads display details.
+  // RLS scopes this to the caller's own row.
+  const profile = await getProfile();
+
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar />
@@ -26,7 +30,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <MobileNav />
         </div>
 
-        <Topbar />
+        <Topbar userName={profile?.full_name} userEmail={profile?.email} />
 
         {/* min-w-0 is essential: without it a wide child (a table, a wide
             card) can force horizontal scrolling on the whole page instead

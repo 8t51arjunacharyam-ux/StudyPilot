@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { X } from "lucide-react";
 import { mainNav, secondaryNav } from "@/components/layout/navigation";
 import { BrandMark } from "@/components/layout/Brand";
+import { LogoutButton } from "@/components/auth/LogoutButton";
 import { cn } from "@/lib/utils";
 
 /**
@@ -120,11 +121,8 @@ export function MobileNav() {
               ))}
             </div>
 
-            <div className="m-3 rounded-card border border-dashed border-border-strong bg-surface-muted p-3">
-              <p className="text-xs font-semibold">Development preview</p>
-              <p className="mt-0.5 text-xs leading-relaxed text-muted">
-                Layout only. No account is signed in.
-              </p>
+            <div className="border-t border-border p-3">
+              <LogoutButton />
             </div>
           </nav>
         </div>

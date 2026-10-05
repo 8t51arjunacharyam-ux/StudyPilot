@@ -1,21 +1,52 @@
 import { AppShell } from "@/components/layout/AppShell";
+import { requireUser } from "@/lib/auth/session";
+
+/**
+ * Force these pages to render per-request, never at build time.
+ *
+ * WHY THIS LINE IS A SECURITY REQUIREMENT, NOT AN OPTIMISATION
+ *
+ * Every page inside app/(app)/ reads the signed-in user's cookies. If any of
+ * them were statically prerendered at build time, one student's HTML would be
+ * generated once, cached on a CDN, and then served to EVERY visitor. That is
+ * both a data leak and a broken experience.
+ *
+ * `force-dynamic` guarantees the render happens on the server, per request,
+ * with that requester's own cookies. Authenticated pages must never be static.
+ *
+ * It also has a practical benefit: the build no longer tries to call Supabase
+ * at build time, so `next build` succeeds even before environment variables
+ * are configured.
+ */
+export const dynamic = "force-dynamic";
 
 /**
  * Layout for all signed-in application pages.
  *
- * SECURITY NOTE — this is currently the visual shell only. Once Supabase
- * Auth is connected this file becomes the security chokepoint described in
- * docs/PROJECT_PLAN.md §5: it will call `supabase.auth.getUser()` and
- * `redirect('/login')` when there is no session, so every nested page is
- * protected by default.
+ * ─────────────────────────────────────────────────────────────────────────────
+ * THIS IS THE SECURITY CHOKEPOINT
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Every page inside app/(app)/ - /dashboard, /subjects, /planner, /exams,
+ * /memory, /analytics, /settings - inherits this check automatically, because
+ * Next.js nests them under this layout. Adding a new page is protected by
+ * default rather than by remembering to add a guard.
  *
- * Until that check exists, /dashboard is publicly reachable and displays
- * mock data. That is expected in this phase and is stated on the page.
+ * `requireUser()` calls `supabase.auth.getUser()`, which VERIFIES the session
+ * token with the Supabase Auth server rather than merely decoding it. An
+ * expired or revoked session fails that check and the visitor is redirected to
+ * /login. There is no way to reach a child page without a valid session.
+ *
+ * IMPORTANT: this is not the ONLY layer. Server Actions are reachable by a
+ * direct POST, bypassing layouts entirely, so every action re-checks the
+ * session itself. RLS is the third layer, at the database.
  */
-export default function AppLayout({
+export default async function AppLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // Redirects to /login when there is no valid session.
+  await requireUser();
+
   return <AppShell>{children}</AppShell>;
 }

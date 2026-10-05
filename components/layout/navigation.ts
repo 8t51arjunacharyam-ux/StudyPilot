@@ -1,10 +1,11 @@
 import type { LucideIcon } from "lucide-react";
 import {
   LayoutDashboard,
-  CalendarDays,
+  CalendarRange,
   BookOpen,
   CalendarCheck,
-  TrendingUp,
+  Brain,
+  BarChart3,
   Settings,
 } from "lucide-react";
 
@@ -14,6 +15,9 @@ import {
  * Kept as data rather than duplicated JSX in three places (sidebar, mobile
  * nav, topbar). One list means adding a page means adding one entry, and the
  * nav can never drift out of sync with itself.
+ *
+ * Every href below corresponds to a real route inside app/(app)/, so no link
+ * can ever point at a 404.
  */
 export type NavItem = {
   href: string;
@@ -23,10 +27,11 @@ export type NavItem = {
 
 export const mainNav: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/plan", label: "Study Plan", icon: CalendarDays },
+  { href: "/planner", label: "Planner", icon: CalendarRange },
   { href: "/subjects", label: "Subjects", icon: BookOpen },
   { href: "/exams", label: "Exams", icon: CalendarCheck },
-  { href: "/progress", label: "Progress", icon: TrendingUp },
+  { href: "/memory", label: "Memory", icon: Brain },
+  { href: "/analytics", label: "Analytics", icon: BarChart3 },
 ];
 
 export const secondaryNav: NavItem[] = [

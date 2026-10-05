@@ -4,17 +4,19 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { mainNav, secondaryNav } from "@/components/layout/navigation";
 import { BrandMark } from "@/components/layout/Brand";
+import { LogoutButton } from "@/components/auth/LogoutButton";
 import { cn } from "@/lib/utils";
 
 /**
- * Sidebar — desktop navigation.
+ * Sidebar - desktop navigation.
  *
  * A Client Component because it uses `usePathname()` to know which page is
- * active. That's the one thing a server component cannot do: the active route
+ * active. That is the one thing a server component cannot do: the active route
  * is only known on the client during navigation.
  *
- * Active-page detection compares `pathname === href`, so this remains correct
- * for the flat routes built so far.
+ * Active-page detection compares `pathname === href`, so this stays correct
+ * for the flat routes used so far. If nested routes are added later (e.g.
+ * /subjects/[id]), this needs `startsWith` instead.
  */
 export function Sidebar({ className }: { className?: string }) {
   const pathname = usePathname();
@@ -39,32 +41,20 @@ export function Sidebar({ className }: { className?: string }) {
           Study
         </p>
         {mainNav.map((item) => (
-          <NavLink
-            key={item.href}
-            item={item}
-            active={isActive(item.href)}
-          />
+          <NavLink key={item.href} item={item} active={isActive(item.href)} />
         ))}
 
         <p className="px-3 pt-6 pb-2 text-xs font-semibold uppercase tracking-wider text-subtle">
           Account
         </p>
         {secondaryNav.map((item) => (
-          <NavLink
-            key={item.href}
-            item={item}
-            active={isActive(item.href)}
-          />
+          <NavLink key={item.href} item={item} active={isActive(item.href)} />
         ))}
       </nav>
 
-      {/* Development-phase notice. This banner is removed once real
-          authentication replaces the placeholder identity below. */}
-      <div className="m-3 rounded-card border border-dashed border-border-strong bg-surface-muted p-3">
-        <p className="text-xs font-semibold text-foreground">Development preview</p>
-        <p className="mt-0.5 text-xs leading-relaxed text-muted">
-          Navigation and layout only. No account is signed in yet.
-        </p>
+      {/* Sign-out lives at the bottom of the shell, as required. */}
+      <div className="border-t border-border p-3">
+        <LogoutButton />
       </div>
     </aside>
   );
