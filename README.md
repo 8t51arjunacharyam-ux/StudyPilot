@@ -1,36 +1,103 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# StudyPilot
 
-## Getting Started
+An adaptive study planning system. Your study plan adapts to your real progress.
 
-First, run the development server:
+StudyPilot is not a calendar or a todo list. When a student misses a session, the
+plan recalculates the unfinished workload and redistributes it across the time
+actually remaining — without overloading them.
+
+## Core capabilities
+
+| Capability | What it does |
+| --- | --- |
+| **Plan Rescue** | Recalculates and redistributes missed work across remaining available time |
+| **BrainFit Scheduler** | Places difficult subjects in high-energy periods, lighter work in low-energy ones |
+| **Memory Radar** | Tracks topic confidence and revision history to flag material about to be forgotten |
+| **Difficulty Debt** | Weighs difficulty, exam urgency, remaining workload and confidence to show what is slipping |
+| **Study Now** | Recommends the single most useful session to perform right now |
+
+## Tech stack
+
+- **Framework:** Next.js 16 (App Router) · React 19 · TypeScript
+- **Styling:** Tailwind CSS v4 (CSS-first `@theme` tokens)
+- **Icons:** lucide-react
+- **Database:** Supabase PostgreSQL *(planned)*
+- **Auth:** Supabase Auth *(planned)*
+- **AI:** OpenAI *(planned, later phase)*
+- **Deploy:** Vercel
+
+## Current status — Phase 1 (UI foundation)
+
+The interface is built. The intelligence is not.
+
+**Working:** design system, responsive app shell (desktop sidebar + mobile
+drawer + topbar), UI primitives, and the landing, auth and dashboard routes.
+
+**Not built yet:** authentication, database, and all scheduling / rescue /
+memory / risk logic. Every figure currently shown on the dashboard comes from
+one static file of hand-written constants in `lib/mock-data.ts`, and the UI
+labels itself accordingly. The auth forms are deliberately disabled rather
+than pretending to work.
+
+This is intentional. The full architecture and phased build order are documented
+in [`docs/PROJECT_PLAN.md`](docs/PROJECT_PLAN.md).
+
+## Getting started
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Route | Description |
+| --- | --- |
+| `/` | Landing page |
+| `/login` | Sign in (not yet connected) |
+| `/register` | Create account (not yet connected) |
+| `/dashboard` | Student dashboard (mock data) |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Quality checks
 
-## Learn More
+All three must pass before any phase is considered complete:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npx tsc --noEmit   # types
+npm run lint       # lint
+npm run build      # production build
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+app/
+├── (marketing)/     Public landing page
+├── (auth)/          Login and registration
+├── (app)/           Signed-in shell + dashboard
+├── globals.css      Design tokens (Tailwind v4 @theme)
+└── layout.tsx       Root layout
 
-## Deploy on Vercel
+components/
+├── ui/              Primitives: Button, Card, Badge, Progress, states
+├── layout/          AppShell, Sidebar, Topbar, MobileNav
+└── features/        Feature components (dashboard/*)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+lib/
+├── mock-data.ts     TEMPORARY — hardcoded dev data, delete later
+└── utils.ts         Shared helpers
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+docs/
+└── PROJECT_PLAN.md  Architecture and development phases
+```
+
+## Development principles
+
+- No fake functionality — if it does not work, the UI says so
+- No hidden errors — errors surface with real messages and real logs
+- Pure, testable domain logic — no I/O inside business rules
+- Minimal dependencies, each justified before it is added
+
+## License
+
+Private project.
