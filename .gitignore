@@ -35,6 +35,9 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# ...but the template is safe to commit and is required so others know
+# which variables the project needs.
+!.env.example
 
 # vercel
 .vercel
