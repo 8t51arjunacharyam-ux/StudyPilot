@@ -1,20 +1,39 @@
 import { Gauge } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/Card";
 import { ButtonLink } from "@/components/ui/Button";
-import type { DebtItem } from "@/lib/mock-data";
 
 /**
  * DifficultyDebtCard — subjects whose risk is building up.
- *
- * IMPORTANT: `debtScore` and `reason` here are hand-written strings and
- * numbers in lib/mock-data.ts. No debt calculation runs anywhere in this
- * phase. The real score will combine topic difficulty, exam proximity,
- * outstanding workload and confidence decay, and `reason` will be generated
- * from whichever factors actually pushed the score up.
- *
- * So the *presentation* here is final, but the *numbers* are placeholders.
  */
-export function DifficultyDebtCard({ items }: { items: DebtItem[] }) {
+export function DifficultyDebtCard({ items }: { items: Array<{
+  id: string;
+  subjectName: string;
+  color: string;
+  debtScore: number;
+  reason: string;
+}> }) {
+  if (items.length === 0) {
+    return (
+      <Card>
+        <CardHeader className="flex-row items-center justify-between pb-4">
+          <div className="flex items-center gap-2.5">
+            <Gauge className="size-4 text-warning" aria-hidden="true" />
+            <CardTitle>Difficulty debt</CardTitle>
+          </div>
+          <span className="text-xs text-muted">Highest risk first</span>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted">All on track! No subjects are building up difficulty debt.</p>
+        </CardContent>
+        <CardFooter>
+          <ButtonLink href="/progress" variant="ghost" size="sm">
+            View breakdown
+          </ButtonLink>
+        </CardFooter>
+      </Card>
+    );
+  }
+
   return (
     <Card>
       <CardHeader className="flex-row items-center justify-between pb-4">

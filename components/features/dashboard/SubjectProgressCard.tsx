@@ -1,18 +1,20 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Progress } from "@/components/ui/Progress";
-import type { SubjectProgress } from "@/lib/mock-data";
 
 /**
  * SubjectProgressCard — per-subject completion.
- *
- * `progress` and `topicsDone/total` are hardcoded mock values. When this
- * becomes real, progress should be computed from completed sessions rather
- * than stored, so the two can never disagree with each other.
  */
 export function SubjectProgressCard({
   subjects,
 }: {
-  subjects: SubjectProgress[];
+  subjects: Array<{
+    id: string;
+    name: string;
+    color: string;
+    progress: number;
+    topicsDone: number;
+    topicsTotal: number;
+  }>;
 }) {
   return (
     <Card>

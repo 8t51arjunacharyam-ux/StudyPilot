@@ -1,29 +1,45 @@
 import type { Metadata } from "next";
-import { CalendarRange } from "lucide-react";
 import { Container, PageHeader } from "@/components/ui/Container";
-import { EmptyState } from "@/components/ui/EmptyState";
+import { PlannerList } from "@/components/features/planner/PlannerList";
+import { getTodaySessions, getUpcomingSessions, getMissedSessions } from "@/lib/data/study_sessions";
+import { getSubjects } from "@/lib/data/subjects";
+import { getTopics } from "@/lib/data/topics";
+import type { StudySessionWithDetails } from "@/lib/data/study_sessions";
 
 export const metadata: Metadata = {
   title: "Planner",
 };
 
-/**
- * Planner - protected placeholder.
- *
- * This route exists so the shell navigation has no dead links and so the
- * route-protection layout can be verified across every protected page.
- *
- * It is NOT implemented. No data is fetched and no feature logic runs here.
- */
-export default function Page() {
+export default async function PlannerPage() {
+  const [today, upcoming, missed, subjects, topics] = await Promise.all([
+    getTodaySessions(),
+    getUpcomingSessions(7),
+    getMissedSessions(),
+    getSubjects(),
+    getTopics(),
+  ]);
+
+  // Deduplicate sessions by id so a session that appears in both today and
+  // upcoming lists is only rendered once.
+  const sessionMap = new Map<string, StudySessionWithDetails>();
+  for (const session of [...today, ...upcoming, ...missed]) {
+    sessionMap.set(session.id, session);
+  }
+  const allSessions = Array.from(sessionMap.values()).sort(
+    (a, b) => new Date(a.scheduled_start).getTime() - new Date(b.scheduled_start).getTime()
+  );
+
   return (
     <Container size="wide" className="py-8 sm:py-10">
-      <PageHeader title="Planner" description="The BrainFit scheduler and your full study timeline will live here. The scheduling engine is a later phase." />
+      <PageHeader
+        title="Planner"
+        description="Your BrainFit schedule and session timeline."
+      />
 
-      <EmptyState
-        icon={CalendarRange}
-        title="Not built yet"
-        description="This page is reserved for a later phase. It is protected by the same authentication check as the rest of the application, but no functionality has been implemented."
+      <PlannerList
+        initialSessions={allSessions}
+        initialSubjects={subjects}
+        initialTopics={topics}
       />
     </Container>
   );

@@ -1,20 +1,21 @@
 import { Clock3, CheckCircle2, Flame, Target } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Progress } from "@/components/ui/Progress";
-import type { mockStudyHealth } from "@/lib/mock-data";
 
 /**
  * StudyHealthCard — a summary of how the week is going.
- *
- * All numbers are hand-written constants from lib/mock-data.ts. The
- * percentages below are simple arithmetic on those constants for display;
- * they are not a real health score. The real score comes from Difficulty Debt
- * once the domain engine exists.
  */
 export function StudyHealthCard({
   data,
 }: {
-  data: typeof mockStudyHealth;
+  data: {
+    weeklyHoursPlanned: number;
+    weeklyHoursCompleted: number;
+    sessionsCompleted: number;
+    sessionsPlanned: number;
+    streakDays: number;
+    healthLabel: string;
+  };
 }) {
   const completionRate =
     data.sessionsPlanned > 0

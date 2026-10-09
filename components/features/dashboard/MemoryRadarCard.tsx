@@ -1,20 +1,40 @@
 import { Radar } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/Card";
 import { ButtonLink } from "@/components/ui/Button";
-import type { RadarTopic } from "@/lib/mock-data";
 
 /**
  * MemoryRadarCard — topics most at risk of being forgotten.
- *
- * The confidence numbers here are hand-written constants, NOT the output of
- * any forgetting-curve calculation. The real Memory Radar will derive this
- * from each topic's `last_reviewed_at` and its review history in
- * `topic_reviews`, using a spaced-repetition model.
- *
- * Confidence is shown with a coloured bar *and* a number, never colour
- * alone — colour-blind users must be able to read the value too.
  */
-export function MemoryRadarCard({ topics }: { topics: RadarTopic[] }) {
+export function MemoryRadarCard({ topics }: { topics: Array<{
+  id: string;
+  topicName: string;
+  subjectName: string;
+  color: string;
+  confidence: number;
+  daysSinceReview: number;
+}> }) {
+  if (topics.length === 0) {
+    return (
+      <Card>
+        <CardHeader className="flex-row items-center justify-between pb-4">
+          <div className="flex items-center gap-2.5">
+            <Radar className="size-4 text-primary" aria-hidden="true" />
+            <CardTitle>Memory radar</CardTitle>
+          </div>
+          <span className="text-xs text-muted">At-risk topics</span>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted">All caught up! No topics need review right now.</p>
+        </CardContent>
+        <CardFooter>
+          <ButtonLink href="/memory" variant="ghost" size="sm">
+            View Memory
+          </ButtonLink>
+        </CardFooter>
+      </Card>
+    );
+  }
+
   return (
     <Card>
       <CardHeader className="flex-row items-center justify-between pb-4">
@@ -74,7 +94,7 @@ export function MemoryRadarCard({ topics }: { topics: RadarTopic[] }) {
       </CardContent>
 
       <CardFooter>
-        <ButtonLink href="/progress" variant="ghost" size="sm">
+        <ButtonLink href="/memory" variant="ghost" size="sm">
           View all topics
         </ButtonLink>
       </CardFooter>

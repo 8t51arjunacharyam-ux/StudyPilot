@@ -1,4 +1,4 @@
-# StudyPilot
+/# StudyPilot
 
 An adaptive study planning system. Your study plan adapts to your real progress.
 

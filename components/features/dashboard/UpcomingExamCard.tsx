@@ -1,26 +1,44 @@
 import { CalendarClock, Layers } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import type { MockExam } from "@/lib/mock-data";
+import type { ExamWithSubject } from "@/lib/types/database";
 
 /**
  * UpcomingExamCard — the next exam and how much is left to cover.
- *
- * Urgency tone is derived from `daysAway` with simple thresholds so the
- * visual urgency is consistent everywhere. The real Difficulty Debt engine
- * will combine this with difficulty, confidence and remaining workload —
- * this card only shows the date-based part of that picture.
  */
-export function UpcomingExamCard({ exam }: { exam: MockExam }) {
+export function UpcomingExamCard({ exam }: { exam: ExamWithSubject | null }) {
+  if (!exam) {
+    return (
+      <Card>
+        <CardHeader className="pb-4">
+          <CardTitle>Upcoming exam</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted">No exams scheduled. Add an exam to see it here.</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const now = Date.now();
+  const examTime = new Date(exam.exam_date).getTime();
+  const daysUntil = Math.ceil((examTime - now) / (1000 * 60 * 60 * 24));
+  const isPast = daysUntil < 0;
+
   const tone =
-    exam.daysAway <= 7 ? "danger" : exam.daysAway <= 14 ? "warning" : "info";
+    isPast ? "neutral" : daysUntil <= 7 ? "danger" : daysUntil <= 14 ? "warning" : "info";
 
   const urgency =
-    exam.daysAway <= 7
-      ? "Very soon"
-      : exam.daysAway <= 14
-        ? "Approaching"
-        : "Upcoming";
+    isPast
+      ? "Past"
+      : daysUntil <= 7
+        ? "Very soon"
+        : daysUntil <= 14
+          ? "Approaching"
+          : "Upcoming";
+
+  const subject = exam.subject as { name: string; color: string } | null;
+  const subjectName = subject?.name ?? "Unknown";
 
   return (
     <Card>
@@ -32,7 +50,7 @@ export function UpcomingExamCard({ exam }: { exam: MockExam }) {
       <CardContent className="space-y-4">
         <div>
           <p className="text-base font-semibold">{exam.title}</p>
-          <p className="mt-0.5 text-sm text-muted">{exam.subjectName}</p>
+          <p className="mt-0.5 text-sm text-muted">{subjectName}</p>
         </div>
 
         <dl className="space-y-2.5 border-t border-border pt-4 text-sm">
@@ -41,19 +59,28 @@ export function UpcomingExamCard({ exam }: { exam: MockExam }) {
               <CalendarClock className="size-4" aria-hidden="true" />
               Date
             </dt>
-            <dd className="font-medium">{exam.dateLabel}</dd>
+            <dd className="font-medium">
+              {new Date(exam.exam_date).toLocaleDateString(undefined, {
+                weekday: "short",
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </dd>
           </div>
           <div className="flex items-center justify-between gap-3">
             <dt className="flex items-center gap-2 text-muted">
               <Layers className="size-4" aria-hidden="true" />
               Topics remaining
             </dt>
-            <dd className="font-medium tabular-nums">{exam.topicsRemaining}</dd>
+            <dd className="font-medium tabular-nums">{exam.topics_covered?.length ?? 0}</dd>
           </div>
           <div className="flex items-center justify-between gap-3">
             <dt className="text-muted">Time left</dt>
             <dd className="font-medium">
-              {exam.daysAway} {exam.daysAway === 1 ? "day" : "days"}
+              {isPast ? "Exam passed" : `${daysUntil} ${daysUntil === 1 ? "day" : "days"}`}
             </dd>
           </div>
         </dl>

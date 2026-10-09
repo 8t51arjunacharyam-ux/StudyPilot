@@ -10,13 +10,14 @@ import { cn } from "@/lib/utils";
  * never colour-only information.
  */
 
-type Tone = "primary" | "success" | "warning" | "danger";
+type Tone = "primary" | "success" | "warning" | "danger" | "info";
 
 const tones: Record<Tone, string> = {
   primary: "bg-primary",
   success: "bg-success",
   warning: "bg-warning",
   danger: "bg-danger",
+  info: "bg-info",
 };
 
 export function Progress({

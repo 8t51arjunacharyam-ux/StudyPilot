@@ -1,5 +1,7 @@
 import { AppShell } from "@/components/layout/AppShell";
 import { requireUser } from "@/lib/auth/session";
+import { getProfile } from "@/lib/auth/session";
+import { redirect } from "next/navigation";
 
 /**
  * Force these pages to render per-request, never at build time.
@@ -47,6 +49,15 @@ export default async function AppLayout({
 }) {
   // Redirects to /login when there is no valid session.
   await requireUser();
+
+  // Check if onboarding is complete (skip for onboarding page itself)
+  const profile = await getProfile();
+
+  // If onboarding is not complete, redirect to onboarding
+  // (The onboarding page itself handles its own profile check)
+  if (profile && !profile.onboarding_completed) {
+    redirect("/onboarding");
+  }
 
   return <AppShell>{children}</AppShell>;
 }

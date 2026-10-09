@@ -1,30 +1,30 @@
 import type { Metadata } from "next";
-import { BookOpen } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Container, PageHeader } from "@/components/ui/Container";
-import { EmptyState } from "@/components/ui/EmptyState";
+import { SubjectList } from "@/components/features/subjects/SubjectList";
 
 export const metadata: Metadata = {
   title: "Subjects",
 };
 
-/**
- * Subjects - protected placeholder.
- *
- * This route exists so the shell navigation has no dead links and so the
- * route-protection layout can be verified across every protected page.
- *
- * It is NOT implemented. No data is fetched and no feature logic runs here.
- */
-export default function Page() {
+export default async function SubjectsPage() {
+  const { getSubjectsWithProgress } = await import("@/lib/data/subjects");
+  const subjects = await getSubjectsWithProgress();
+
   return (
     <Container size="wide" className="py-8 sm:py-10">
-      <PageHeader title="Subjects" description="Manage the subjects you are studying and the topics inside them. Wired to Supabase in a later phase." />
-
-      <EmptyState
-        icon={BookOpen}
-        title="Not built yet"
-        description="This page is reserved for a later phase. It is protected by the same authentication check as the rest of the application, but no functionality has been implemented."
+      <PageHeader
+        title="Subjects"
+        description="Manage the subjects you are studying and the topics inside them."
+        action={
+          <a href="/subjects/new" className="hidden sm:inline-flex">
+            <Plus className="size-4 mr-2" aria-hidden="true" />
+            Add Subject
+          </a>
+        }
       />
+
+      <SubjectList initialSubjects={subjects} />
     </Container>
   );
 }
